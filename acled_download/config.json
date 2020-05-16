@@ -1,0 +1,14 @@
+{
+    "config": {
+        "host": "https://geonode.wfp.org",
+        "username": "my_username",
+        "password": "my_pass"
+    },
+    "files": [
+        {
+            "data_exist": true,
+            "name": "latest_security_incidents_syria_acled",
+            "path": "/Users/dimitriskarakostis/workspaces/work/syr_acled_geonode/acled_download/data/acled.zip"
+        }
+    ]
+}

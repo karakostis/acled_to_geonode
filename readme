@@ -10,3 +10,8 @@ pip3 install requirements.txt
 
 # execute
 python3 acled_gn.py
+# a shapefile with the ACLED events of the last 30 days will be generated in data/ folder
+# the log file in logs/ folder will be updated
+
+# upload the layer to geonode (and delete old layer)
+python3 migration.py -c /Users/dimitriskarakostis/workspaces/work/syr_acled_geonode/acled_download/config.json
