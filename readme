@@ -1,0 +1,12 @@
+# python version used: Python 3.7.6
+# git clone repository
+#create vitrual env
+cd to directory with repository
+python3 -m venv acled_gn
+# activate environment
+source acled_gn/bin/activate
+# install requirements
+pip3 install requirements.txt
+
+# execute
+python3 acled_gn.py
