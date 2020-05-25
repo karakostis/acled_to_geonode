@@ -1,17 +1,16 @@
-# python version used: Python 3.7.6
+### python version used: Python 3.7.6 ###
 # git clone repository
-#create vitrual env
-cd to directory with repository
-python3 -m venv acled_gn
-# activate environment
-source acled_gn/bin/activate
-# install requirements
-pip3 install requirements.txt
+# create vitrual env
+a. cd to directory with repository
+b. python3 -m venv acled_gn
 
-# execute
-python3 acled_gn.py
-# a shapefile with the ACLED events of the last 30 days will be generated in data/ folder
-# the log file in logs/ folder will be updated
+source acled_gn/bin/activate  # activate environment
+pip3 install requirements.txt # install requirements
+# modify the acled_download/creds.json file by passing the geonode credentials
+python3 acled_gn.py # execute script
+
+A shapefile and a zipped file with the ACLED events of the last 14 days will be generated in data/acled_download/ folder.
+The log file in acled_download/logs/ folder will be updated.
 
 # upload the layer to geonode (and delete old layer)
-python3 migration.py -c /Users/dimitriskarakostis/workspaces/work/syr_acled_geonode/acled_download/config.json
+python3 migration.py -c /path/to/acled_to_geonode/acled_download/config.json
