@@ -66,8 +66,11 @@ else:
     data_exist = False
 
 # create config file
+with open('creds.json') as data_file:
+    data = json.load(data_file)
+
 config_params = {
-    "name": "latest_security_incidents_syria_acled",
+    "name": "latest_security_incidents_syria_acled", # we can keep this name
     "path": "/Users/dimitriskarakostis/workspaces/work/syr_acled_geonode/acled_download/data/acled.zip",
     "data_exist": data_exist
 }
@@ -75,8 +78,8 @@ config_params = {
 config = {
 	"config": {
 		"host": "https://geonode.wfp.org",
-		"username": "my_username",
-		"password": "my_pass"
+		"username": data['geonode_username'],
+		"password": data['geonode_password']
 	},
 	"files": [{
         "data_exist": data_exist,

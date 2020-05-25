@@ -2,7 +2,7 @@
     "config": {
         "host": "https://geonode.wfp.org",
         "username": "my_username",
-        "password": "my_pass"
+        "password": "my_password"
     },
     "files": [
         {
