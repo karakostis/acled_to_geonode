@@ -12,15 +12,18 @@ from fiona.crs import from_epsg
 
 data_pth= Path("data/")
 log_pth = Path("logs/")
-# select time range for data
-subtract_days = 14
+
+# load script parameters
+with open('params.json') as params_file:
+    params = json.load(params_file)
+
 end_date = datetime.today().strftime('%Y-%m-%d')
-start_date = (datetime.today() - timedelta(days = subtract_days)).strftime('%Y-%m-%d')
+start_date = (datetime.today() - timedelta(days = params['subtract_days'])).strftime('%Y-%m-%d')
 
 print("end_date", end_date)
 print("start_date", start_date)
 # build url
-query_limit = 800 # default 500
+query_limit = params['query_limit'] # default 500
 main_url = "https://api.acleddata.com/acled/read.csv?terms=accept&limit={query_limit}&".format(query_limit = query_limit)
 iso = '760' # Syria
 url = "{main_url}iso={iso}&event_date={start_date}|{end_date}&event_date_where=BETWEEN".format(main_url = main_url, iso = iso, start_date = start_date, end_date = end_date)
@@ -39,9 +42,8 @@ if (len(dataset)>0):
 
     schema = { 'geometry': 'Point', 'properties': { 'event_date': 'str', 'year':'int', 'event_type': 'str', 'sub_event_type': 'str', 'actor1':'str', 'actor2':'str', 'region': 'str','country': 'str', 'admin1': 'str', 'admin2': 'str', 'admin3': 'str', 'iso3': 'str' } }
 
-    data = dataset
     with collection(shpOut, "w", crs=from_epsg(4326), driver = "ESRI Shapefile", schema = schema) as output:
-        for index, row in data.iterrows():
+        for index, row in dataset.iterrows():
             point = Point(row[lng], row[lat])
             output.write({
                 'properties': {'event_date': row['event_date'], 'year': row['year'], 'event_type': row['event_type'], 'sub_event_type': row['sub_event_type'], 'actor1': row['actor1'], 'actor2': row['actor2'], 'region': row['region'], 'country': row['country'], 'admin1': row['admin1'], 'admin2': row['admin2'], 'admin3': row['admin3'], 'iso3': row['iso3']},
@@ -52,7 +54,7 @@ if (len(dataset)>0):
     log_msg = "{num_data} events were retrieved on {end_date} \n".format(num_data = num_data, end_date = end_date)
 
     #create zipfile
-    time.sleep(10)
+    time.sleep(5)
     from zipfile import ZipFile
     with ZipFile(data_pth/'acled.zip', 'w') as zipObj:
         zipObj.write(data_pth/'acled.shp')
@@ -66,20 +68,17 @@ else:
     data_exist = False
 
 # create config file
-with open('creds.json') as data_file:
-    data = json.load(data_file)
-
 config_params = {
-    "name": "latest_security_incidents_syria_acled", # we can keep this name
-    "path": "/Users/dimitriskarakostis/workspaces/work/syr_acled_geonode/acled_download/data/acled.zip",
+    "name": params['layer_name'], # we can keep this name
+    "path": params['path_to_zip'],
     "data_exist": data_exist
 }
 
 config = {
 	"config": {
-		"host": "https://geonode.wfp.org",
-		"username": data['geonode_username'],
-		"password": data['geonode_password']
+		"host": params['host'],
+		"username": params['geonode_username'],
+		"password": params['geonode_password']
 	},
 	"files": [{
         "data_exist": data_exist,
