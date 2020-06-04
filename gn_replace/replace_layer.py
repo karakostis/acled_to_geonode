@@ -73,26 +73,17 @@ def upload(layers, config, session):
 
         filtered = [l for l in layers if l["title"] == name]
 
+        if len(filtered) == 0:
+            url = upload_url
+            msg = "Uploading layer {name}".format(name=name)
+
         if len(filtered) == 1:
             layer = filtered[0]
-            url = "{host}{detail}/remove".format(host=host, detail=layer["detail_url"])
-            msg = "Deleting layer {name}".format(name=name)
-
-            logging.info(msg)
-
-            payload = {
-                "csrfmiddlewaretoken": session.cookies["csrftoken"],
-                "value": layer["detail_url"].split("/", 2)[-1],
-            }
-
-            resp = session.post(url, data=payload, headers=headers)
-            print(resp)
+            url = "{host}{detail}/replace".format(host=host, detail=layer["detail_url"])
+            msg = "Updating layer {name}".format(name=name)
 
         if len(filtered) > 1:
             raise_error("Repeated layer name")
-
-        url = upload_url
-        msg = "Uploading layer {name}".format(name=name)
 
         logging.info(msg)
 
@@ -114,21 +105,6 @@ def upload(layers, config, session):
         resp = session.post(url, files=files, data=payload, headers=headers)
         print(resp)
 
-        # d: assign the correct style
-        # the issue is that when a layer is deleted the style is deleted as well.
-        # we need to have a backup of the style which is copied every time
-        '''
-        style_url = "https://geonode.wfp.org/gs/geonode:{name}/style/manage".format(name=name)
-        print(style_url)
-        headers_style = {"User-Agent": USER_AGENT, "Referer": style_url}
-        payload_style = {
-            "default_style": "latest_security_incidents_syria_acled",
-            "csrfmiddlewaretoken": session.cookies["csrftoken"],
-            "charset": "UTF-8",
-        }
-        resp_styles = session.post(style_url, data=payload_style, headers=headers_style)
-        print(resp_styles)
-        '''
 
 def get_layers(config, session):
     session_params = config.get("config").copy()

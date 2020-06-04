@@ -35,6 +35,7 @@ dataset = pd.read_csv(url)
 if (len(dataset)>0):
     data_exist = True
     num_data = len(dataset)
+    print(num_data)
 
     shpOut = data_pth/'acled.shp'
     lng = 'longitude'
@@ -94,3 +95,14 @@ with open('config.json','w') as fp:
 # logging
 with open(log_pth/'log.csv','a') as fd:
     fd.write(log_msg)
+
+# send email notification
+import smtplib
+s = smtplib.SMTP('smtp.gmail.com', 587)
+s.starttls()
+s.login("wfp.gis.syr@gmail.com", "g1smaps2020")
+msg = log_msg
+sender = 'wfp.gis.syr@gmail.com'
+recipients = ['dkarakostis@gmail.com']
+s.sendmail(sender, recipients, str(msg))
+s.quit()
